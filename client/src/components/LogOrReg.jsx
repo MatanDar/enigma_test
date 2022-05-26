@@ -6,10 +6,72 @@ function LoginOrReg(props) {
 
     let [regMode, setregMode] = useState(false)
 
+    let [name, setname] = useState("")
+    let [username, setusername] = useState("")
+    let [password, setpassword] = useState("")
+    let [age, setage] = useState("")
+    let [email, setemail] = useState("")
 
-    function submitRegister() {
 
-        props.socket.emit("bdikale", { a: "a" })
+    let [loginUsername, setloginUsername] = useState("")
+    let [loginPassword, setloginPassword] = useState("")
+
+    async function submitRegister() {
+
+
+        const res = await fetch('/register', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name,
+                username,
+                password,
+                age,
+                email
+            })
+        });
+
+        let data = await res.json()
+        if (data.status == "success") {
+
+            props.fetchUsers()
+
+        }
+
+    }
+
+    async function submitLogin() {
+
+        const res = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                loginUsername,
+                loginPassword
+            })
+        })
+
+        let data = await res.json()
+
+        if (data.status == "success") {
+            props.setisLogged(true)
+            console.log(data.isAdmin);
+            props.setisAdmin(data.isAdmin)
+        }
+        else if (data.status == "failed") {
+            alert("bad details")
+        }
+        else { // error
+            alert("error try again")
+        }
+
+        console.log(data);
 
     }
 
@@ -20,20 +82,15 @@ function LoginOrReg(props) {
                 if (regMode) {
                     return (
                         <div>
-                            <label>Name</label>
-                            <TextField></TextField>
+                            <TextField label="Name" value={name} name="name" onChange={(ev) => { setname(ev.target.value) }}></TextField>
                             <br />
-                            <label>Username</label>
-                            <TextField></TextField>
+                            <TextField label="Username" value={username} onChange={(ev) => { setusername(ev.target.value) }} ></TextField>
                             <br />
-                            <label>Password</label>
-                            <TextField></TextField>
+                            <TextField label="Password" value={password} onChange={(ev) => { setpassword(ev.target.value) }} ></TextField>
                             <br />
-                            <label>Age</label>
-                            <TextField></TextField>
+                            <TextField label="Age" value={age} onChange={(ev) => { setage(ev.target.value) }} ></TextField>
                             <br />
-                            <label>Email</label>
-                            <TextField></TextField>
+                            <TextField label="Email" value={email} onChange={(ev) => { setemail(ev.target.value) }} ></TextField>
                             <br />
                             <Button onClick={() => { submitRegister() }}>Register</Button>
                         </div>
@@ -42,13 +99,11 @@ function LoginOrReg(props) {
                 else {
                     return (
                         <div>
-                            <label>Username</label>
-                            <TextField></TextField>
+                            <TextField label="Username" value={loginUsername} onChange={(ev) => { setloginUsername(ev.target.value) }}></TextField>
                             <br />
-                            <label>Password</label>
-                            <TextField></TextField>
+                            <TextField label="Password" value={loginPassword} onChange={(ev) => { setloginPassword(ev.target.value) }}></TextField>
                             <br />
-                            <Button>Login</Button>
+                            <Button onClick={() => { submitLogin() }}>Login</Button>
                         </div>
                     )
 

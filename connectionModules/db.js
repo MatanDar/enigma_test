@@ -1,5 +1,4 @@
 const mysql = require('mysql2')
-console.log("hi");
 let connection = null;
 
 connection = mysql.createConnection({
