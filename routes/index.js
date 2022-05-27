@@ -26,18 +26,15 @@ router.get("/allusers", async (req, res, next) => {
 router.post("/register", async (req, res, next) => {
 
     try {
-
-        const { name,
-            username,
-            password,
-            age,
-            email } = req.body
+        const { name, username, password, age, email } = req.body
 
         let result = await sqlConnection.query(`
                 INSERT INTO users ( username , password , name , age , email , isAdmin )
-                VALUES            ('${username}', '${password}', '${name}', '${age}', '${email}', 0);
-                
+                VALUES ('${username}', '${password}', '${name}', '${age}', '${email}', 0);                
             `)
+
+
+
 
         res.json({ status: "success" })
 
@@ -59,6 +56,9 @@ router.post("/login", async (req, res, next) => {
 
         let result = await sqlConnection.query(`SELECT * FROM users WHERE username='${loginUsername}' and password='${loginPassword}'`)
         if (result.length > 0) {
+            res.cookie("logged", Buffer.from(result[0].id + ":" + result[0].username).toString("base64"), {
+                httpOnly: false,
+            })
             res.json({ status: "success", isAdmin: result[0].isAdmin == 1 ? true : false })
         }
         else {
@@ -73,6 +73,33 @@ router.post("/login", async (req, res, next) => {
     }
 
 })
+
+router.post("/tokenCheck", async (req, res, next) => {
+
+    try {
+
+        const { token } = req.body
+        const decToken = Buffer.from(token, "base64").toString()
+
+        const [id, username] = decToken.split(":")
+
+        let result = await sqlConnection.query(`SELECT * FROM users WHERE username='${username}' and id='${id}'`)
+        if (result.length > 0) {
+            res.json({ status: "success", isAdmin: result[0].isAdmin == 1 ? true : false })
+        }
+        else {
+            res.json({ status: "failed" })
+        }
+
+    }
+    catch (err) {
+
+        res.json({ status: "error" })
+
+    }
+
+})
+
 
 router.post('/delete', async (req, res, next) => {
 

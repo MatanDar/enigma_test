@@ -1,7 +1,7 @@
 import LoginOrReg from "./LogOrReg"
 import Userview from "./UserView"
 import React, { useState, useEffect } from "react";
-
+import Cookies from "js-cookie"
 
 function Home() {
 
@@ -9,11 +9,36 @@ function Home() {
     let [isAdmin, setisAdmin] = useState(false)
     let [users, setusers] = useState([])
 
+    let [checkingUser, setcheckingUser] = useState(true)
 
     useEffect(async () => {
 
-        fetchUsers()
+        const logged = Cookies.get("logged")
+        if (logged) {
+            const res = await fetch('/tokenCheck', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    token: logged
+                })
+            })
+            const data = await res.json()
 
+            if (data.status == "success") {
+                setisLogged(true)
+                setisAdmin(data.isAdmin)
+            }
+            else if (data.status == "failed") {
+                alert("bad details")
+            }
+            else { // error
+                alert("error try again")
+            }
+        }
+        setcheckingUser(false)
     }, [])
 
     async function fetchUsers() {
@@ -21,18 +46,26 @@ function Home() {
         const res = await fetch("/allusers")
         const data = await res.json()
 
-        console.log(data);
         setusers(data)
 
     }
 
-    if (isLogged) {
-        return <Userview fetchUsers={fetchUsers} isAdmin={isAdmin} users={users} setisLogged={setisLogged} ></Userview>
+    if (checkingUser) {
+
+        return <label>LOADING !!!</label>
 
     }
     else {
-        return <LoginOrReg fetchUsers={fetchUsers} setisAdmin={setisAdmin} setisLogged={setisLogged}></LoginOrReg>
+        if (isLogged) {
+            return <Userview fetchUsers={fetchUsers} isAdmin={isAdmin} users={users} setisLogged={setisLogged} ></Userview>
+
+        }
+        else {
+            return <LoginOrReg fetchUsers={fetchUsers} setisAdmin={setisAdmin} setisLogged={setisLogged}></LoginOrReg>
+        }
+
     }
+
 
 }
 

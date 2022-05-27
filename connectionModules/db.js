@@ -4,7 +4,7 @@ let connection = null;
 connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: "123456789",
+    password: "1234",
     database: 'enigma_test'
 });
 

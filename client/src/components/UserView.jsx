@@ -12,6 +12,8 @@ import { Button } from "@material-ui/core";
 
 import Modal from 'react-modal';
 
+import Cookies from 'js-cookie'
+
 function UserView(props) {
 
     let [users, setusers] = useState([])
@@ -28,6 +30,10 @@ function UserView(props) {
     useEffect(() => {
         setusers(props.users)
     }, [props.users])
+
+    useEffect(() => {
+        props.fetchUsers()
+    }, [])
 
     async function handleDelete(id) {
 
@@ -52,6 +58,7 @@ function UserView(props) {
 
     function logout() {
         props.setisLogged(false)
+        Cookies.remove("logged")
     }
 
     function add() {
@@ -99,7 +106,7 @@ function UserView(props) {
         }
 
     }
- 
+
     async function submitRegister() {
 
 
@@ -130,7 +137,7 @@ function UserView(props) {
     return (
         <React.Fragment>
             <Button onClick={() => { logout() }}>Logout</Button>
-            <Button onClick={() => { add() }}>Add</Button>
+            {props.isAdmin ? <Button onClick={() => { add() }}>Add</Button> : ""}
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>

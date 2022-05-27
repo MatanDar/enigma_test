@@ -2,7 +2,12 @@ import React, { useState, useEffect } from "react";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
+
+
+
 function LoginOrReg(props) {
+
+
 
     let [regMode, setregMode] = useState(false)
 
@@ -16,8 +21,10 @@ function LoginOrReg(props) {
     let [loginUsername, setloginUsername] = useState("")
     let [loginPassword, setloginPassword] = useState("")
 
-    async function submitRegister() {
 
+
+
+    async function submitRegister() {
 
         const res = await fetch('/register', {
             method: 'POST',
@@ -44,6 +51,8 @@ function LoginOrReg(props) {
     }
 
     async function submitLogin() {
+
+        if (loginUsername || loginPassword) return alert("missing login details")
 
         const res = await fetch('/login', {
             method: 'POST',
@@ -75,46 +84,59 @@ function LoginOrReg(props) {
 
     }
 
+
+
+
+
     return (
-        <div>
-            {(() => {
+        <div className="form">
+            <div className="sign-up-form">
+                {(() => {
 
-                if (regMode) {
-                    return (
-                        <div>
-                            <TextField label="Name" value={name} name="name" onChange={(ev) => { setname(ev.target.value) }}></TextField>
-                            <br />
-                            <TextField label="Username" value={username} onChange={(ev) => { setusername(ev.target.value) }} ></TextField>
-                            <br />
-                            <TextField label="Password" value={password} onChange={(ev) => { setpassword(ev.target.value) }} ></TextField>
-                            <br />
-                            <TextField label="Age" value={age} onChange={(ev) => { setage(ev.target.value) }} ></TextField>
-                            <br />
-                            <TextField label="Email" value={email} onChange={(ev) => { setemail(ev.target.value) }} ></TextField>
-                            <br />
-                            <Button onClick={() => { submitRegister() }}>Register</Button>
-                        </div>
-                    )
-                }
-                else {
-                    return (
-                        <div>
-                            <TextField label="Username" value={loginUsername} onChange={(ev) => { setloginUsername(ev.target.value) }}></TextField>
-                            <br />
-                            <TextField label="Password" value={loginPassword} onChange={(ev) => { setloginPassword(ev.target.value) }}></TextField>
-                            <br />
-                            <Button onClick={() => { submitLogin() }}>Login</Button>
-                        </div>
-                    )
+                    if (regMode) {
+                        return (
+                            <div>
+                                <TextField label="Name" value={name} name="name" onChange={(ev) => { setname(ev.target.value) }}></TextField>
+                                <TextField label="Username" value={username} onChange={(ev) => { setusername(ev.target.value) }} ></TextField>
+                                <TextField label="Password" value={password} onChange={(ev) => { setpassword(ev.target.value) }} ></TextField>
+                                <TextField label="Age" value={age} onChange={(ev) => { setage(ev.target.value) }} ></TextField>
+                                <TextField label="Email" value={email} onChange={(ev) => { setemail(ev.target.value) }} ></TextField>
+                                <div className="btnContainer">
+                                    <Button variant="contained" size="small" color="primary" onClick={() => { submitRegister() }}>Register</Button>
+                                </div>
+                            </div>
 
-                }
+                        )
+                    }
+                    else {
+                        return (
 
-            })()}
-            <label>Switch to:</label><br />
-            <Button onClick={() => { setregMode(false) }}>Log-in</Button>
-            <Button onClick={() => { setregMode(true) }}>Register</Button>
+                            <div >
+                                <TextField label="Username" value={loginUsername} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? setloginUsername(ev.target.value) : null}></TextField>
+                                <TextField label="Password" value={loginPassword} onChange={(ev) => { setloginPassword(ev.target.value) }}></TextField>
 
+                                <div className="btnContainer">
+                                    <Button variant="contained" size="small" color="primary" onClick={() => { submitLogin() }}>Login</Button>
+                                </div>
+                            </div>
+                        )
+
+                    }
+
+                })()}
+
+                <label>Switch to:</label>
+                <div className="btnContainer">
+                    <div>
+                        <Button variant="outlined" color="primary" onClick={() => { setregMode(false) }}>Log-in</Button>
+                    </div>
+                    <div>
+                        <Button variant="outlined" color="primary" onClick={() => { setregMode(true) }}>Register</Button>
+                    </div>
+                </div>
+            </div>
         </div>
+
     )
 }
 
