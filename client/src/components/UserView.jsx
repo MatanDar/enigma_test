@@ -84,6 +84,12 @@ function UserView(props) {
         setuserToEdit({ ...userToEdit, isAdmin: ev.target.checked ? 1 : 0 })
     }
     async function submitEdit() {
+        if (userToEdit.name == "" || userToEdit.username == "" || userToEdit.password == "" ||
+            userToEdit.age == "" || userToEdit.email == "") {
+            alert("can not leave this field empty")
+            seteditMode(true)
+            return
+        } 
         let res = await fetch('/edit', {
             method: 'POST',
             headers: {
@@ -94,18 +100,13 @@ function UserView(props) {
         })
 
         let data = await res.json()
-        const message = data.message
 
-        if (userToEdit.name == "" || userToEdit.username == "" || userToEdit.password == "" || 
-        userToEdit.age == "" || userToEdit.email == "") {
-            alert("can not leave this field empty")
-            seteditMode(true)
-            return
-        }
-
-          if (data.status == "success") {
+        if (data.status == "success") {
             props.fetchUsers()
             seteditMode(false)
+        }
+        else if (data.status == "username alredy exist") {
+            alert("username alredy exist")
         }
 
     }
@@ -144,7 +145,7 @@ function UserView(props) {
             props.fetchUsers()
             setaddMode(false)
         }
-     }
+    }
 
     return (
         <React.Fragment >
@@ -205,7 +206,7 @@ function UserView(props) {
                         <label>age: </label>
                         <TextField name="age" value={userToEdit.age} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? handleEditChange(ev) : null} ></TextField>
                         <label>email: </label>
-                        <TextField name="email" value={userToEdit.email} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? handleEditChange(ev) : null} ></TextField>
+                        <TextField name="email" value={userToEdit.email} onChange={(ev) => /^[a-zA-Z0-9@.]*$/.test(ev.target.value) ? handleEditChange(ev) : null} ></TextField>
                         <label>is admin: </label>
                         <Checkbox name="isAdmin" checked={userToEdit.isAdmin == 0 ? false : true} onChange={(ev) => { handleAdminEdit(ev) }} ></Checkbox>
                         <div className="btnContainer">
@@ -221,7 +222,7 @@ function UserView(props) {
                     <TextField label="Username" value={username} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? setusername(ev.target.value) : null} ></TextField>
                     <TextField label="Password" value={password} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? setpassword(ev.target.value) : null} ></TextField>
                     <TextField label="Age" value={age} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? setage(ev.target.value) : null} ></TextField>
-                    <TextField label="Email" value={email} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? setemail(ev.target.value) : null} ></TextField>
+                    <TextField label="Email" value={email} onChange={(ev) => /^[a-zA-Z0-9@.]*$/.test(ev.target.value) ? setemail(ev.target.value) : null} ></TextField>
                     <div className="btnContainer">
                         <Button variant="contained" size="small" color="primary" type="submit" onClick={() => { submitRegister() }}>Add</Button>
                         <Button variant="contained" size="small" color="primary" onClick={() => { setaddMode(false) }}>dismiss</Button>

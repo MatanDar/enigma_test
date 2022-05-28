@@ -95,7 +95,7 @@ function LoginOrReg(props) {
                                 <TextField label="Username" value={username} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? setusername(ev.target.value) : null} ></TextField>
                                 <TextField label="Password" value={password} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? setpassword(ev.target.value) : null} ></TextField>
                                 <TextField label="Age" value={age} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? setage(ev.target.value) : null} ></TextField>
-                                <TextField label="Email" value={email} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? setemail(ev.target.value) : null} ></TextField>
+                                <TextField label="Email" value={email} onChange={(ev) => /^[a-zA-Z0-9@.]*$/.test(ev.target.value) ? setemail(ev.target.value) : null} ></TextField>
                                 <div className="btnContainer">
                                     <Button variant="contained" size="small" color="primary" type="submit" onClick={() => { submitRegister() }}>Register</Button>
                                 </div>

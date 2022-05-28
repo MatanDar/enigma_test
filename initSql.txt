@@ -1,0 +1,19 @@
+CREATE SCHEMA `enigma_test` ;
+
+CREATE TABLE `enigma_test`.`users` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(45) NULL,
+  `password` VARCHAR(45) NULL,
+  `name` VARCHAR(45) NULL,
+  `age` VARCHAR(45) NULL,
+  `email` VARCHAR(45) NULL,
+  `isAdmin` INT NULL,
+  PRIMARY KEY (`id`));
+
+
+INSERT INTO `enigma_test`.`users` (`name`,`username`,`password`,`age`,`email`,`isAdmin`)VALUES("matan","matand21","12345","29","matan@gmail.com",1);
+INSERT INTO `enigma_test`.`users` (`name`,`username`,`password`,`age`,`email`,`isAdmin`)VALUES("neria","nerial","12345","15","neria@gmail.com",1);
+INSERT INTO `enigma_test`.`users` (`name`,`username`,`password`,`age`,`email`,`isAdmin`)VALUES("roy","royd21","12345","29","roy@gmail.com",0);
+INSERT INTO `enigma_test`.`users` (`name`,`username`,`password`,`age`,`email`,`isAdmin`)VALUES("avram","avramd21","12345","52","avram@gmail.com",0);
+INSERT INTO `enigma_test`.`users` (`name`,`username`,`password`,`age`,`email`,`isAdmin`)VALUES("moti","motid21","12345","29","moti@gmail.com",0);
+INSERT INTO `enigma_test`.`users` (`name`,`username`,`password`,`age`,`email`,`isAdmin`)VALUES("shuli","efoshuli","12345","22","shuli@efo.com",0);
