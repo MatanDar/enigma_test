@@ -9,9 +9,10 @@ import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import { Button } from "@material-ui/core";
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
 import Modal from 'react-modal';
-
 import Cookies from 'js-cookie'
 
 function UserView(props) {
@@ -76,20 +77,13 @@ function UserView(props) {
     }
 
     function handleEditChange(ev) {
-
-        // userToEdit[ev.target.name] = ev.target.value
-
         setuserToEdit({ ...userToEdit, [ev.target.name]: ev.target.value })
-
     }
-
     function handleAdminEdit(ev) {
         console.log(ev.target.checked);
         setuserToEdit({ ...userToEdit, isAdmin: ev.target.checked ? 1 : 0 })
     }
-
     async function submitEdit() {
-
         let res = await fetch('/edit', {
             method: 'POST',
             headers: {
@@ -100,6 +94,21 @@ function UserView(props) {
         })
 
         let data = await res.json()
+        const message = data.message
+
+        if (userToEdit.name == "" || userToEdit.username == "" || userToEdit.password == "" || 
+        userToEdit.age == "" || userToEdit.email == "") {
+            alert("can not leave this field empty")
+            seteditMode(true)
+            return
+        }
+
+        if (message) {
+            alert(message)
+            seteditMode(true)
+        }
+
+
         if (data.status == "success") {
             props.fetchUsers()
             seteditMode(false)
@@ -108,8 +117,6 @@ function UserView(props) {
     }
 
     async function submitRegister() {
-
-
         const res = await fetch('/register', {
             method: 'POST',
             headers: {
@@ -126,31 +133,45 @@ function UserView(props) {
         });
 
         let data = await res.json()
-        if (data.status == "success") {
+        const message = data.message
 
+        if (name == "" || username == "" || password == "" || age == "" || email == "") {
+            alert("can not leave this field empty")
+            setaddMode(true)
+            return
+        }
+
+        if (message) {
+            alert(message)
+            setaddMode(true)
+
+        }
+        if (data.status == "success") {
             props.fetchUsers()
             setaddMode(false)
         }
-
-    }
+     }
 
     return (
-        <React.Fragment>
-            <Button onClick={() => { logout() }}>Logout</Button>
-            {props.isAdmin ? <Button onClick={() => { add() }}>Add</Button> : ""}
-            <TableContainer component={Paper}>
+        <React.Fragment >
+            <div className="btnContainer">
+                <Button variant="contained" size="small" color="primary" onClick={() => { logout() }}>Logout</Button>
+                <span>My Enigma Table</span>
+                {props.isAdmin ? <Button variant="contained" size="small" color="primary" onClick={() => { add() }}>Add</Button> : ""}
+            </div>
+            <TableContainer component={Paper} className="tableContainer">
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
+                    <TableHead className="header">
                         <TableRow>
-                            {props.isAdmin ? <TableCell align="right">id</TableCell> : null}
+                            {props.isAdmin ? <TableCell align="right">Id</TableCell> : null}
                             <TableCell align="right">username</TableCell>
-                            {props.isAdmin ? <TableCell align="right">password</TableCell> : null}
+                            {props.isAdmin ? <TableCell align="right">Password</TableCell> : null}
                             <TableCell align="right">name</TableCell>
                             <TableCell align="right">age</TableCell>
-                            {props.isAdmin ? <TableCell align="right">email</TableCell> : null}
-                            {props.isAdmin ? <TableCell align="right">is admin</TableCell> : null}
-                            {props.isAdmin ? <TableCell align="right">delete</TableCell> : null}
-                            {props.isAdmin ? <TableCell align="right">edit</TableCell> : null}
+                            {props.isAdmin ? <TableCell align="right">Email</TableCell> : null}
+                            {props.isAdmin ? <TableCell align="right">Is admin</TableCell> : null}
+                            {props.isAdmin ? <TableCell align="right">Delete</TableCell> : null}
+                            {props.isAdmin ? <TableCell align="right">Edit</TableCell> : null}
 
                         </TableRow>
                     </TableHead>
@@ -168,8 +189,8 @@ function UserView(props) {
                                     <TableCell align="right">{user.age}</TableCell>
                                     {props.isAdmin ? <TableCell align="right">{user.email}</TableCell> : null}
                                     {props.isAdmin ? <TableCell align="right">{user.isAdmin}</TableCell> : null}
-                                    {props.isAdmin ? <TableCell align="right"><Button onClick={() => { handleDelete(user.id) }}>X</Button></TableCell> : null}
-                                    {props.isAdmin ? <TableCell align="right"><Button onClick={() => { editEntry(user.id) }}>EDIT</Button></TableCell> : null}
+                                    {props.isAdmin ? <TableCell align="right"><Button onClick={() => { handleDelete(user.id) }}><DeleteForeverIcon /></Button></TableCell> : null}
+                                    {props.isAdmin ? <TableCell align="right"><Button onClick={() => { editEntry(user.id) }}><EditIcon /></Button></TableCell> : null}
 
                                 </TableRow>
                             )
@@ -178,44 +199,43 @@ function UserView(props) {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <Modal isOpen={editMode}>
-                <label>username: </label>
-                <TextField name="username" value={userToEdit.username} onChange={(ev) => { handleEditChange(ev) }}></TextField>
-                <br />
-                <label>password: </label>
-                <TextField name="password" value={userToEdit.password} onChange={(ev) => { handleEditChange(ev) }} ></TextField>
-                <br />
-                <label>name: </label>
-                <TextField name="name" value={userToEdit.name} onChange={(ev) => { handleEditChange(ev) }} ></TextField>
-                <br />
-                <label>age: </label>
-                <TextField name="age" value={userToEdit.age} onChange={(ev) => { handleEditChange(ev) }} ></TextField>
-                <br />
-                <label>email: </label>
-                <TextField name="email" value={userToEdit.email} onChange={(ev) => { handleEditChange(ev) }} ></TextField>
-                <br />
-                <label>is admin: </label>
-                <Checkbox name="isAdmin" checked={userToEdit.isAdmin == 0 ? false : true} onChange={(ev) => { handleAdminEdit(ev) }} ></Checkbox>
-                <br />
-                <Button onClick={() => { submitEdit() }}>submit</Button>
-                <Button onClick={() => { seteditMode(false) }}>dismiss</Button>
-            </Modal>
-            <Modal isOpen={addMode}>
-                <TextField label="Name" value={name} name="name" onChange={(ev) => { setname(ev.target.value) }}></TextField>
-                <br />
-                <TextField label="Username" value={username} onChange={(ev) => { setusername(ev.target.value) }} ></TextField>
-                <br />
-                <TextField label="Password" value={password} onChange={(ev) => { setpassword(ev.target.value) }} ></TextField>
-                <br />
-                <TextField label="Age" value={age} onChange={(ev) => { setage(ev.target.value) }} ></TextField>
-                <br />
-                <TextField label="Email" value={email} onChange={(ev) => { setemail(ev.target.value) }} ></TextField>
-                <br />
+            <div className="editContainer">
+                <Modal isOpen={editMode} className="addEditForm">
+                    <div className="flexContainer">
+                        <label>username: </label>
+                        <TextField name="username" value={userToEdit.username} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? handleEditChange(ev) : null}></TextField>
+                        <label>password: </label>
+                        <TextField name="password" value={userToEdit.password} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? handleEditChange(ev) : null} ></TextField>
+                        <label>name: </label>
+                        <TextField name="name" value={userToEdit.name} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? handleEditChange(ev) : null} ></TextField>
+                        <label>age: </label>
+                        <TextField name="age" value={userToEdit.age} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? handleEditChange(ev) : null} ></TextField>
+                        <label>email: </label>
+                        <TextField name="email" value={userToEdit.email} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? handleEditChange(ev) : null} ></TextField>
+                        <label>is admin: </label>
+                        <Checkbox name="isAdmin" checked={userToEdit.isAdmin == 0 ? false : true} onChange={(ev) => { handleAdminEdit(ev) }} ></Checkbox>
+                        <div className="btnContainer">
+                            <Button variant="contained" size="small" color="primary" onClick={() => { submitEdit() }}>submit</Button>
+                            <Button variant="contained" size="small" color="primary" onClick={() => { seteditMode(false) }}>dismiss</Button>
+                        </div>
+                    </div>
+                </Modal>
+            </div>
+            <div className="addContainer">
+                <Modal isOpen={addMode} className="addEditForm">
+                    <TextField label="Name" value={name} name="name" onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? setname(ev.target.value) : null}></TextField>
+                    <TextField label="Username" value={username} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? setusername(ev.target.value) : null} ></TextField>
+                    <TextField label="Password" value={password} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? setpassword(ev.target.value) : null} ></TextField>
+                    <TextField label="Age" value={age} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? setage(ev.target.value) : null} ></TextField>
+                    <TextField label="Email" value={email} onChange={(ev) => /^[a-zA-Z0-9]*$/.test(ev.target.value) ? setemail(ev.target.value) : null} ></TextField>
+                    <div className="btnContainer">
+                        <Button variant="contained" size="small" color="primary" type="submit" onClick={() => { submitRegister() }}>Add</Button>
+                        <Button variant="contained" size="small" color="primary" onClick={() => { setaddMode(false) }}>dismiss</Button>
+                    </div>
+                </Modal>
+            </div>
 
-                <Button onClick={() => { submitRegister() }}>Add</Button>
-                <Button onClick={() => { setaddMode(false) }}>dismiss</Button>
 
-            </Modal>
         </React.Fragment>
     )
 

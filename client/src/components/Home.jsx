@@ -34,7 +34,7 @@ function Home() {
             else if (data.status == "failed") {
                 alert("bad details")
             }
-            else { // error
+            else { 
                 alert("error try again")
             }
         }
@@ -42,18 +42,12 @@ function Home() {
     }, [])
 
     async function fetchUsers() {
-
         const res = await fetch("/allusers")
         const data = await res.json()
-
         setusers(data)
-
     }
-
     if (checkingUser) {
-
         return <label>LOADING !!!</label>
-
     }
     else {
         if (isLogged) {
@@ -63,10 +57,7 @@ function Home() {
         else {
             return <LoginOrReg fetchUsers={fetchUsers} setisAdmin={setisAdmin} setisLogged={setisLogged}></LoginOrReg>
         }
-
     }
-
-
 }
 
 export default Home

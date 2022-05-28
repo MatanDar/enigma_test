@@ -17,11 +17,49 @@
 
     -webkit-box-shadow: 5px 5px 15px 3px rgba(0, 0, 0, 0.37);
     box-shadow: 5px 5px 15px 3px rgba(0, 0, 0, 0.37);
-    background-color: rgba(207, 230, 236, 0.45)  !important;
+    background-color: rgba(207, 230, 236, 0.9)  !important;
 }
 
 .btnContainer{
     margin-top: 15px;
     display: flex;
     justify-content: space-around;
+}
+
+.header{
+    background-color: lightblue;
+}
+.tableContainer{
+    margin: 10px;
+}
+
+.MuiTableContainer-root {
+    width: 97% !important;
+    text-align: center;
+    text-align-last: center;
+}
+.addEditForm{
+    text-align: center;
+    text-align-last: center;
+    height: -moz-fit-content;
+    height: fit-content;
+    width: 642px;
+    display: inline-block;
+    padding: 30px;
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    border: 1px solid black;
+    border-radius: 20px;
+    margin: auto;
+    box-shadow: 5px 5px 15px 3px rgb(0 0 0 / 37%);
+    background-color: rgb(231 219 203 / 90%) !important;
+}
+
+.flexContainer{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
 }
