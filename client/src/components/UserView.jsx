@@ -103,13 +103,7 @@ function UserView(props) {
             return
         }
 
-        if (message) {
-            alert(message)
-            seteditMode(true)
-        }
-
-
-        if (data.status == "success") {
+          if (data.status == "success") {
             props.fetchUsers()
             seteditMode(false)
         }

@@ -98,10 +98,7 @@ router.post('/delete', async (req, res, next) => {
 router.post('/edit', async (req, res, next) => {
     try {
         const { id, username, password, name, age, email, isAdmin } = req.body
-        const existUser = await sqlConnection.query(`SELECT * FROM users WHERE username='${username}'`)
-        if (existUser.length > 0) {
-            return res.json({ message: "username alredy exist" })
-        }
+      
         let result = await sqlConnection.query(`UPDATE users SET username='${username}', password='${password}', name='${name}', age='${age}', email='${email}', isAdmin=${isAdmin}  WHERE id=${id}`)
         res.json({ status: "success" })
     }
